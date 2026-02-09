@@ -1,0 +1,7 @@
+{
+  "name": "Copy of JusTech Premium",
+  "description": "A high-performance legal ecosystem for Brazilian Law with AI-driven automation, specialized in Labor Law (CLT/TST) and compliance.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
