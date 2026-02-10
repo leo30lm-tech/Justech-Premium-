@@ -1,5 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
-import { SYSTEM_INSTRUCTION } from "../constants";
+import { GoogleGenAI } from "@google/genai"; 
 
 // Using process.env.API_KEY as the Google GenAI Key container
 const API_KEY = process.env.API_KEY || '';
