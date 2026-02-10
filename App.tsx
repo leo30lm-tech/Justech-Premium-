@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Gavel } from 'lucide-react';
-import Sidebar from './Sidebar';
-import Header from './Header';
-import Dashboard from './Dashboard';
-import LaborModule from './LaborModule';
-import CalculationModule from './CalculationModule';
-import ContractModule from './ContractModule';
-import SimpleChatModule from './SimpleChatModule';
-import SettingsModule from './SettingsModule';
-import Onboarding from './Onboarding';
-import Register from './Register';
-import Login from './Login';
-import SupportChat from './SupportChat';
-import { ViewState } from './types';
-import { LanguageProvider } from './LanguageContext';
+// Ajustado para bater com as pastas "Componentes", "Contextos" e "Serviços" do seu GitHub
+import Sidebar from './Componentes/Sidebar';
+import Header from './Componentes/Header';
+import Dashboard from './Componentes/Dashboard';
+import LaborModule from './Componentes/LaborModule';
+import CalculationModule from './Componentes/CalculationModule';
+import ContractModule from './Componentes/ContractModule';
+import SimpleChatModule from './Componentes/SimpleChatModule';
+import SettingsModule from './Componentes/SettingsModule';
+import Onboarding from './Componentes/Onboarding';
+import Register from './Componentes/Register';
+import Login from './Componentes/Login';
+import SupportChat from './Componentes/SupportChat';
+import { ViewState } from './tipos'; // Ajustado se o arquivo for tipos.ts
+import { LanguageProvider } from './Contextos/LanguageContext';
 
 const AppContent: React.FC = () => {
-  // App Stage: onboarding -> register -> login -> app
-  const [appStage, setAppSsetAppStagetage] = useState<'onboarding' | 'register' | 'login' | 'app'>('onboarding');
-  
+  const [appStage, setAppStage] = useState<'onboarding' | 'register' | 'login' | 'app'>('onboarding');
   const [currentView, setCurrentView] = useState<ViewState>('DASHBOARD');
-  const [calculationDatacalculationData, setCalculationData] = useState<any>(null);
+  const [calculationData, setCalculationData] = useState<any>(null);
   const [companyData, setCompanyData] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Global Settings State
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  // Apply Dark Mode to HTML Element
   useEffect(() => {
     const root = window.document.documentElement;
     if (theme === 'dark') {
@@ -37,30 +33,19 @@ const AppContent: React.FC = () => {
     }
   }, [theme]);
 
-  // Global Office Profile State
   const [officeProfile, setOfficeProfile] = useState({
-    nome: 'Dr. Advogado ResponsÃ¡vel',
+    nome: 'Dr. Advogado Responsável',
     oab: 'OAB/SP 000.000',
     email: 'contato@advocacia.com.br',
     whatsapp: '(11) 99999-9999',
-    endereco: 'Av. Paulista, 1000 - CJ 12 - SÃ£o Paulo/SP',
-    logo: '' // Stores Base64 string of the logo
+    endereco: 'Av. Paulista, 1000 - CJ 12 - São Paulo/SP',
+    logo: '' 
   });
 
-  // --- FLOW HANDLERS ---
-  if (appStage === 'onboarding') {
-    return <Onboarding onNext={() => setAppStage('register')} />;
-  }
+  if (appStage === 'onboarding') return <Onboarding onNext={() => setAppStage('register')} />;
+  if (appStage === 'register') return <Register onRegister={() => setAppStage('login')} />;
+  if (appStage === 'login') return <Login onLogin={() => setAppStage('app')} />;
 
-  if (appStage === 'register') {
-    return <Register onRegister={() => setAppStage('login')} />;
-  }
-
-  if (appStage === 'login') {
-    return <Login onLogin={() => setAppStage('app')} />;
-  }
-
-  // --- MAIN APP CONTENT ---
   const renderContent = () => {
     switch (currentView) {
       case 'DASHBOARD':
@@ -75,8 +60,8 @@ const AppContent: React.FC = () => {
         return (
           <SimpleChatModule 
             title="Direito Penal" 
-            subtitle="Habeas Corpus, Defesas e ExecuÃ§Ã£o Penal" 
-            initialMessage="OlÃ¡, Doutor(a). Sou sua especialista em Direito Penal e Processual Penal. Posso auxiliar na redaÃ§Ã£o de HCs, Respostas Ã  AcusaÃ§Ã£o ou anÃ¡lise de dosimetria da pena. Como posso ajudar?"
+            subtitle="Habeas Corpus, Defesas e Execução Penal" 
+            initialMessage="Olá, Doutor(a). Sou sua especialista em Direito Penal. Como posso ajudar?"
             icon={Gavel}
             colorClass="text-red-600"
             iconBgClass="bg-red-600"
@@ -84,14 +69,7 @@ const AppContent: React.FC = () => {
           />
         );
       case 'SETTINGS':
-        return (
-          <SettingsModule 
-            currentProfile={officeProfile} 
-            onSaveProfile={setOfficeProfile}
-            theme={theme}
-            setTheme={setTheme}
-          />
-        );
+        return <SettingsModule currentProfile={officeProfile} onSaveProfile={setOfficeProfile} theme={theme} setTheme={setTheme} />;
       default:
         return <Dashboard onChangeView={(view) => { setCurrentView(view); setMobileMenuOpen(false); }} onSaveCompanyContext={setCompanyData} />;
     }
@@ -105,15 +83,10 @@ const AppContent: React.FC = () => {
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />
-      
       <div className={`transition-all duration-300 ${mobileMenuOpen ? 'opacity-50 pointer-events-none' : ''} md:opacity-100 md:pointer-events-auto`}>
         <Header onToggleMenu={() => setMobileMenuOpen(!mobileMenuOpen)} />
-        <main className="transition-all duration-300">
-          {renderContent()}
-        </main>
+        <main>{renderContent()}</main>
       </div>
-      
-      {/* Floating Support Widget */}
       <SupportChat officeProfile={officeProfile} />
     </div>
   );
